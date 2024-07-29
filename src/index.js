@@ -20,12 +20,12 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-app.get("/login", (req, res) => {
+app.post("/login", (req, res) => {
     res.sendFile(path.join(__dirname, '../public/login.html'));
     // res.sendFile("login");
 });
 
-app.get("/signup", (req, res) => {
+app.post("/signup", (req, res) => {
     res.sendFile(path.join(__dirname, '../public/signup.html'));
 });
 
