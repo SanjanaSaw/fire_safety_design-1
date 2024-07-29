@@ -43,7 +43,7 @@ app.get("/signup", (req, res) => {
 
 
 // Register User
-app.post("/signup", async (req, res) => {
+app.get("/signup", async (req, res) => {
     const data = {
         name: req.body.username,
         email: req.body.email,
