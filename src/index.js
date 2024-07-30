@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const xlsx = require('xlsx');
 const fs = require('fs');
 const bodyParser=require("body-parser");
+require('dotenv').config();
+
 
 const app = express();
 
