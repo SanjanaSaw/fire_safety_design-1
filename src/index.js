@@ -16,6 +16,11 @@ app.use(bodyParser.urlencoded({
     extended:true
 }));
 
+app.use(cors({
+   
+    methods:["POST","GET"],
+    credentials: true
+}));
 
 app.use(express.static(path.join(__dirname, '../public')));
 
@@ -27,8 +32,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/login.html'));
-    // res.sendFile("login");
+    // res.sendFile(path.join(__dirname, '../public/login.html'));
+    res.sendFile("login");
 });
 
 app.get("/signup", (req, res) => {
