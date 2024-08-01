@@ -4,6 +4,7 @@ const collection = require("./config");
 const bcrypt = require('bcrypt');
 const xlsx = require('xlsx');
 const fs = require('fs');
+const cors = require("cors");
 const bodyParser=require("body-parser");
 require('dotenv').config();
 
@@ -163,7 +164,7 @@ app.post("/login", async (req, res) => {
 // });
 
 
-const port = process.env.port ||  5501;
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`)
+const PORT = process.env.PORT ||  5501;
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`)
 });
