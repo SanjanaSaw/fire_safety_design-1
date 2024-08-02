@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
-const connect = mongoose.connect(process.env.MONGODB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+const connect = mongoose.connect("mongodb+srv://diveshprasad018:divesh31@cluster0.6mj0cmi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
 // const connect = mongoose.connect("mongodb://localhost:27017/Login-1");
 
 // Check database connected or not
