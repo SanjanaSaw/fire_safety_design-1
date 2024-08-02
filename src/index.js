@@ -2,8 +2,8 @@ const express = require("express");
 const path = require("path");
 const collection = require("./config");
 const bcrypt = require('bcrypt');
-const xlsx = require('xlsx');
-const fs = require('fs');
+// const xlsx = require('xlsx');
+// const fs = require('fs');
 const cors = require("cors");
 const bodyParser=require("body-parser");
 require('dotenv').config();
@@ -12,11 +12,10 @@ require('dotenv').config();
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended:true
-}));
+app.use(bodyParser.urlencoded({extended:true}));
 
-app.use(cors());
+app.use(cors({ methods: ["POST", "GET"], credentials: true }));
+// app.use(cors());
 
 app.use(express.static(path.join(__dirname, '../public')));
 
@@ -53,45 +52,68 @@ app.get("/signup", (req, res) => {
 
 // Register User
 app.post("/signup", async (req, res) => {
-    console.log("Received signup request");
-    const data = {
-        name: req.body.username,
-        email: req.body.email,
-        password: req.body.password
-    };
-    
-    console.log("signup data:",data)
-    // Check if the username already exists in the database
-    const existingUser = await collection.findOne({ name: data.name });
-    const existingEmail = await collection.findOne({ email: data.email });
+    try {
+        const data = { name: req.body.username, email: req.body.email, password: req.body.password };
+        const existingUser = await collection.findOne({ name: data.name });
+        const existingEmail = await collection.findOne({ email: data.email });
 
-    if (existingUser) {
-        res.send(`<script>
-                alert("User already exists, please use a different username");
-                window.location.href = "/signup";
-            </script>`);
-    } else if (existingEmail) {
-        res.send(`<script>
-            alert("Email already exists, please use a different email");
-            window.location.href = "/signup";
-        </script>`);
-    } else {
-        // Hash the password using bcrypt
-        const saltRounds = 10; // Number of salt rounds for bcrypt
-        const hashedPassword = await bcrypt.hash(data.password, saltRounds);
-
-        data.password = hashedPassword; // Replace the original password with the hashed one
-
-        const userdata = await collection.insertMany(data);
-        console.log(userdata);
-        return res.send(`
-            <script>
-                alert("User registered successfully.");
-                window.location.href = "/login";
-            </script>
-        `);
+        if (existingUser) {
+            res.send(`<script>alert("User already exists, please use a different username"); window.location.href = "/signup";</script>`);
+        } else if (existingEmail) {
+            res.send(`<script>alert("Email already exists, please use a different email"); window.location.href = "/signup";</script>`);
+        } else {
+            const hashedPassword = await bcrypt.hash(data.password, 10);
+            data.password = hashedPassword;
+            const userdata = await collection.insertMany(data);
+            res.send(`<script>alert("User registered successfully."); window.location.href = "/login";</script>`);
+        }
+    } catch (error) {
+        console.error("Signup Error:", error);
+        res.status(500).send("Internal Server Error");
     }
 });
+
+// app.post("/signup", async (req, res) => {
+//     // console.log("Received signup request");
+//     const data = {
+//         name: req.body.username,
+//         email: req.body.email,
+//         password: req.body.password
+//     };
+    
+//     console.log("signup data:",data)
+//     // Check if the username already exists in the database
+//     const existingUser = await collection.findOne({ name: data.name });
+//     const existingEmail = await collection.findOne({ email: data.email });
+
+//     if (existingUser) {
+//         res.send(`<script>
+//                 alert("User already exists, please use a different username");
+//                 window.location.href = "/signup";
+//             </script>`);
+//     } else if (existingEmail) {
+//         res.send(`<script>
+//             alert("Email already exists, please use a different email");
+//             window.location.href = "/signup";
+//         </script>`);
+//     } else {
+//         // Hash the password using bcrypt
+//         const saltRounds = 10; // Number of salt rounds for bcrypt
+//         const hashedPassword = await bcrypt.hash(data.password, saltRounds);
+
+//         data.password = hashedPassword; // Replace the original password with the hashed one
+
+//         const userdata = await collection.insertMany(data);
+//         console.log(userdata);
+        
+//     return res.send(`
+//             <script>
+//                 alert("User registered successfully.");
+//                 window.location.href = "/login";
+//             </script>
+//         `);
+//     }
+// });
 
 // Login user 
 app.post("/login", async (req, res) => {
@@ -122,10 +144,8 @@ app.post("/login", async (req, res) => {
             // res.sendFile("home");
         }
     } catch (error) {
-        return res.send(`<script>
-                alert("Wrong details");
-                window.location.href = "/login";
-            </script>`);
+        console.error("Login Error:", error);
+        res.status(500).send("Internal Server Error");
     }
 });
 

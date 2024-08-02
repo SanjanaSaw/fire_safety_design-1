@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
-const connect = mongoose.connect("mongodb://localhost:27017/Login-1");
+const connect = mongoose.connect(process.env.MONGODB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+// const connect = mongoose.connect("mongodb://localhost:27017/Login-1");
 
 // Check database connected or not
 connect.then(() => {
