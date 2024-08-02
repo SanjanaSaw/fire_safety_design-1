@@ -16,11 +16,7 @@ app.use(bodyParser.urlencoded({
     extended:true
 }));
 
-app.use(cors({
-   
-    methods:["POST","GET"],
-    credentials: true
-}));
+app.use(cors());
 
 app.use(express.static(path.join(__dirname, '../public')));
 
@@ -32,11 +28,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    // res.sendFile(path.join(__dirname, '../public/login.html'));
-    res.sendFile("login");
+    // console.log("Received GET request at /login")
+    res.sendFile(path.join(__dirname, '../public/login.html'));
+    // res.sendFile("login");
 });
 
 app.get("/signup", (req, res) => {
+    // console.log("Received GET request at /signup");
     res.sendFile(path.join(__dirname, '../public/signup.html'));
 });
 
@@ -61,7 +59,8 @@ app.post("/signup", async (req, res) => {
         email: req.body.email,
         password: req.body.password
     };
-
+    
+    console.log("signup data:",data)
     // Check if the username already exists in the database
     const existingUser = await collection.findOne({ name: data.name });
     const existingEmail = await collection.findOne({ email: data.email });
