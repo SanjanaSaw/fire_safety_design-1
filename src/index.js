@@ -192,3 +192,5 @@ const PORT = process.env.PORT ||  5501;
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`)
 });
+
+module.exports = app;
